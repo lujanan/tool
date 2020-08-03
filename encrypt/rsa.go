@@ -33,7 +33,7 @@ func NewXRsa(publicKey []byte, privateKey []byte) (*xrsa, error) {
 
 	block, _ = pem.Decode(privateKey)
 	if block == nil {
-		return nil, errors.New("private key error!")
+		return nil, errors.New("private key error")
 	}
 	priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
@@ -44,7 +44,6 @@ func NewXRsa(publicKey []byte, privateKey []byte) (*xrsa, error) {
 		publicKey:  pub,
 		privateKey: priv,
 	}, nil
-
 }
 
 // PublicEncrypt 公钥加密
@@ -67,7 +66,7 @@ func (r *xrsa) PublicEncrypt(data string) (string, error) {
 func (r *xrsa) PrivateDecrypt(encrypted string) (string, error) {
 	partLen := r.publicKey.N.BitLen() / 8
 	raw, err := base64.StdEncoding.DecodeString(encrypted)
-	chunks := split([]byte(raw), partLen)
+	chunks := split(raw, partLen)
 
 	buffer := bytes.NewBufferString("")
 	for _, chunk := range chunks {
@@ -77,7 +76,6 @@ func (r *xrsa) PrivateDecrypt(encrypted string) (string, error) {
 		}
 		buffer.Write(decrypted)
 	}
-
 	return buffer.String(), err
 }
 
